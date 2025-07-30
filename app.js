@@ -1,5 +1,3 @@
-import { products, quizData } from './data.js';
-
 document.addEventListener('DOMContentLoaded', () => {
     const state = {
         currentSlide: 0,
@@ -11,6 +9,81 @@ document.addEventListener('DOMContentLoaded', () => {
         currentLightboxIndex: 0,
         touchStartX: 0,
         touchEndX: 0,
+        sessionId: generateSessionId(),
+        quizAnswers: [],
+        estimatedAge: null,
+        estimatedGender: null,
+        relationshipStatus: null,
+        purchaseFrequency: null,
+        preferenceProfile: null,
+        sessionStartTime: null,
+    };
+
+    // МИНИМАЛЬНАЯ аналитика - только возраст+пол+товар при заполнении формы
+    const sendAnalytics = (data) => {
+        // Отправляем только если есть все критичные данные
+        if (!state.estimatedAge || !state.estimatedGender || !state.selectedKitId) {
+            return; // Не отправляем если нет полных данных
+        }
+
+        const analyticsData = {
+            product_id: state.selectedKitId,
+            age: state.estimatedAge,
+            gender: state.estimatedGender
+        };
+
+        // Отправляем данные на сервер
+        fetch('analytics.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(analyticsData)
+        }).catch(err => console.log('Analytics error:', err));
+    };
+
+    // Генерация ID сессии
+    function generateSessionId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Определение возраста и пола на основе прямых ответов квиза
+    const analyzeQuizAnswers = () => {
+        if (state.quizAnswers.length < 7) return;
+        
+        const answers = state.quizAnswers;
+        
+        // Возраст (вопрос 3, индекс 3)
+        const ageAnswerIndex = answers[3];
+        const ageRanges = ["18-24", "25-34", "35-44", "45-54", "55+"];
+        state.estimatedAge = ageRanges[ageAnswerIndex] || "unknown";
+        
+        // Пол (вопрос 4, индекс 4)
+        const genderAnswerIndex = answers[4];
+        const genders = ["female", "male", "non-binary", "prefer_not_to_say"];
+        state.estimatedGender = genders[genderAnswerIndex] || "unknown";
+        
+        // Семейный статус (вопрос 5, индекс 5)
+        const relationshipIndex = answers[5];
+        const relationshipStatuses = ["single", "in_relationship", "married", "complicated", "prefer_not_to_say"];
+        state.relationshipStatus = relationshipStatuses[relationshipIndex] || "unknown";
+        
+        // Частота покупок (вопрос 6, индекс 6)
+        const frequencyIndex = answers[6];
+        const frequencies = ["first_time", "rarely", "occasionally", "regularly", "often"];
+        state.purchaseFrequency = frequencies[frequencyIndex] || "unknown";
+        
+        // Профиль предпочтений на основе первых 3 вопросов
+        const preferenceScore = answers[0] + answers[1] + answers[2];
+        if (preferenceScore <= 3) {
+            state.preferenceProfile = "conservative";
+        } else if (preferenceScore <= 6) {
+            state.preferenceProfile = "moderate";
+        } else if (preferenceScore <= 9) {
+            state.preferenceProfile = "adventurous";
+        } else {
+            state.preferenceProfile = "bold";
+        }
     };
 
     const carouselContainer = document.getElementById('carousel-container');
@@ -72,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderCarousel = () => {
-        carouselSlider.innerHTML = products.map(product => {
+        carouselSlider.innerHTML = window.products.map(product => {
             const storedReviews = JSON.parse(localStorage.getItem(`reviews-product-${product.id}`) || '[]');
             const allReviews = [...product.reviews, ...storedReviews];
 
@@ -181,12 +254,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         <div class="mt-8">
                             <h3 class="font-serif text-2xl text-gold-light mb-4">Lascia la tua recensione</h3>
-                            <form class="review-form space-y-4" data-product-id="${product.id}">
+                            <form class="review-form space-y-4" data-product-id="${product.id}" action="javascript:void(0)">
                                 <input type="text" name="name" class="form-input" placeholder="Il tuo nome" required>
                                 <textarea name="text" class="form-input" rows="3" placeholder="La tua esperienza..." required></textarea>
                                 <div class="flex items-center justify-between">
                                     <div class="rating-stars">
-                                        <input type="radio" id="star5-${product.id}" name="rating" value="5" required><label for="star5-${product.id}"><i data-lucide="star" class="w-6 h-6"></i></label>
+                                        <input type="radio" id="star5-${product.id}" name="rating" value="5"><label for="star5-${product.id}"><i data-lucide="star" class="w-6 h-6"></i></label>
                                         <input type="radio" id="star4-${product.id}" name="rating" value="4"><label for="star4-${product.id}"><i data-lucide="star" class="w-6 h-6"></i></label>
                                         <input type="radio" id="star3-${product.id}" name="rating" value="3"><label for="star3-${product.id}"><i data-lucide="star" class="w-6 h-6"></i></label>
                                         <input type="radio" id="star2-${product.id}" name="rating" value="2"><label for="star2-${product.id}"><i data-lucide="star" class="w-6 h-6"></i></label>
@@ -208,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `}).join('');
 
-        indicatorsContainer.innerHTML = products.map((_, index) => `
+        indicatorsContainer.innerHTML = window.products.map((_, index) => `
             <div class="w-2.5 h-2.5 bg-white/30 rounded-full transition-all duration-300 cursor-pointer" data-slide-to="${index}"></div>
         `).join('');
 
@@ -228,13 +301,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const showNextSlide = () => {
-        state.currentSlide = (state.currentSlide + 1) % products.length;
+        const oldSlide = state.currentSlide;
+        state.currentSlide = (state.currentSlide + 1) % window.products.length;
         updateCarouselUI();
+        
+        // Аналитика убрана
     };
 
     const showPrevSlide = () => {
-        state.currentSlide = (state.currentSlide - 1 + products.length) % products.length;
+        const oldSlide = state.currentSlide;
+        state.currentSlide = (state.currentSlide - 1 + window.products.length) % window.products.length;
         updateCarouselUI();
+        
+        // Аналитика убрана
     };
 
     const handleReviewSubmit = (e) => {
@@ -245,6 +324,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = form.elements.text.value;
         const rating = form.elements.rating.value;
         const photoFile = form.elements.photo.files[0];
+
+        // Проверяем рейтинг вручную (убрали required из HTML)
+        if (!rating) {
+            alert('Seleziona un punteggio da 1 a 5 stelle');
+            return;
+        }
 
         const newReview = { name, text, rating: parseInt(rating), photo: null, date: new Date().toISOString() };
 
@@ -305,8 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.select-kit-btn').forEach(button => {
             button.addEventListener('click', () => {
                 state.selectedKitId = button.dataset.kitId;
-                state.selectedKit = products.find(p => p.id === state.selectedKitId);
+                state.selectedKit = window.products.find(p => p.id === state.selectedKitId);
                 state.currentQuestionIndex = 0;
+                
+                // Аналитика убрана - записываем только при заполнении формы
+                
                 renderQuiz();
                 showSection('quiz');
                 window.scrollTo(0, 0);
@@ -323,8 +411,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelectorAll('.review-form').forEach(form => {
-            // form.addEventListener('submit', handleReviewSubmit);
+            form.addEventListener('submit', handleReviewSubmit); // Включил обработку для имитации
             form.querySelector('input[type="file"]').addEventListener('change', handlePhotoPreview);
+            
+            // Останавливаем всплытие touch/click событий чтобы не мешать слайдеру
+            form.addEventListener('touchstart', (e) => e.stopPropagation());
+            form.addEventListener('touchmove', (e) => e.stopPropagation());
+            form.addEventListener('touchend', (e) => e.stopPropagation());
+            form.addEventListener('click', (e) => e.stopPropagation());
+            
+            // Также для всех инпутов внутри формы
+            form.querySelectorAll('input, textarea, button, label').forEach(el => {
+                el.addEventListener('touchstart', (e) => e.stopPropagation());
+                el.addEventListener('touchmove', (e) => e.stopPropagation());
+                el.addEventListener('touchend', (e) => e.stopPropagation());
+                el.addEventListener('click', (e) => e.stopPropagation());
+            });
         });
     };
 
@@ -339,24 +441,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>`;
         sub4Input.value = state.selectedKit.name;
-        sub5Input.value = state.selectedKit.mainImage;
+        sub5Input.value = location.origin + '/lander/flow1/' + state.selectedKit.mainImage;
     };
 
     const renderQuiz = () => {
-        const questionData = quizData.questions[state.currentQuestionIndex];
+        const questionData = window.quizData.questions[state.currentQuestionIndex];
         if (!questionData) {
+            // Квиз завершен
+            analyzeQuizAnswers();
+            // Аналитика убрана
+            
             renderSelectedKit();
             showSection('form');
             window.scrollTo(0, 0);
             return;
         }
+        
+        // Аналитика убрана
 
-        const progress = ((state.currentQuestionIndex + 1) / quizData.questions.length) * 100;
+        const progress = ((state.currentQuestionIndex + 1) / window.quizData.questions.length) * 100;
 
         sections.quiz.innerHTML = `
             <div class="w-full max-w-2xl mx-auto text-center">
                 <div class="mb-8">
-                    <p class="text-gold-light mb-2">Domanda ${state.currentQuestionIndex + 1} di ${quizData.questions.length}</p>
+                    <p class="text-gold-light mb-2">Domanda ${state.currentQuestionIndex + 1} di ${window.quizData.questions.length}</p>
                     <div class="w-full bg-gray-700 rounded-full h-2.5">
                         <div class="bg-gold-light h-2.5 rounded-full" style="width: ${progress}%"></div>
                     </div>
@@ -368,12 +476,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     `).join('')}
                 </div>
             </div>`;
-        document.querySelectorAll('.quiz-option').forEach(button => {
-            button.addEventListener('click', handleQuizAnswer);
+        document.querySelectorAll('.quiz-option').forEach((button, index) => {
+            button.addEventListener('click', () => handleQuizAnswer(index));
         });
     };
     
-    const handleQuizAnswer = () => {
+    const handleQuizAnswer = (answerIndex) => {
+        // Сохраняем ответ
+        state.quizAnswers.push(answerIndex);
+        
+        // Аналитика убрана
+        
         state.currentQuestionIndex++;
         renderQuiz();
     };
@@ -404,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openLightbox = (productId, thumbIndex) => {
         if(state.isLightboxOpen) return;
-        const product = products.find(p => p.id === productId);
+        const product = window.products.find(p => p.id === productId);
         if (!product) return;
         
         state.isLightboxOpen = true;
@@ -451,19 +564,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const showPopup = () => {
         popupOverlay.classList.remove('opacity-0', 'pointer-events-none');
         setTimeout(() => popupContent.classList.remove('opacity-0', 'scale-95'), 10);
+        
+        // Аналитика убрана
     };
 
     const closePopup = () => {
         popupContent.classList.add('opacity-0', 'scale-95');
         setTimeout(() => popupOverlay.classList.add('opacity-0', 'pointer-events-none'), 300);
+        
+        // Аналитика убрана
     };
 
     nextButton.addEventListener('click', showNextSlide);
     prevButton.addEventListener('click', showPrevSlide);
     indicatorsContainer.addEventListener('click', (e) => {
         if (e.target.dataset.slideTo) {
+            const oldSlide = state.currentSlide;
             state.currentSlide = parseInt(e.target.dataset.slideTo, 10);
             updateCarouselUI();
+            
+            // Аналитика убрана
         }
     });
     
@@ -485,13 +605,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closePopupButton.addEventListener('click', closePopup);
     
-    orderForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        showSection('thankYou');
-        window.scrollTo(0, 0);
-        lucide.createIcons();
-    });
+    // Убрал обработчик - форма должна отправляться на api.php как задумано
+    // orderForm теперь работает нормально с action="api.php"
 
+    // Все события отслеживания убраны
+
+    // Функция определения текущей секции
+    const getCurrentSection = () => {
+        if (sections.quiz.classList.contains('section-active')) return 'quiz';
+        if (sections.form.classList.contains('section-active')) return 'form';
+        if (sections.thankYou.classList.contains('section-active')) return 'thank_you';
+        return 'carousel';
+    };
+
+    // ЕДИНСТВЕННОЕ событие аналитики - начало заполнения формы
+    let formStarted = false;
+    if (orderForm) {
+        orderForm.addEventListener('input', () => {
+            if (!formStarted) {
+                formStarted = true;
+                sendAnalytics(); // Отправляем возраст+пол+товар
+            }
+        });
+    }
+
+    // Инициализация
+    state.sessionStartTime = Date.now();
+    
+    // Аналитика убрана - только при заполнении формы
     renderCarousel();
+    
     setTimeout(showPopup, 1500);
 });

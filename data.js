@@ -1,4 +1,4 @@
-export const products = [
+window.products = [
     {
         id: 'kit1',
         name: "Kit 'Connessione Definitiva'",
@@ -83,10 +83,10 @@ export const products = [
         specs: "I prodotti sono realizzati con materiali sicuri per il corpo. Il vibratore richiede batterie (incluse). Le manette hanno uno sgancio di sicurezza. L'uovo è in plastica rigida, riutilizzabile.",
         usageTips: `<h4>Consigli per la Sorpresa Perfetta:</h4><ul class="mt-2 list-disc list-inside"><li><strong>Il Momento Giusto:</strong> Regalalo durante una cena romantica o nascondilo in camera da letto per una sorpresa inaspettata.</li><li><strong>Esplorazione Graduale:</strong> Non dovete usare tutto subito. Iniziate con il piumino e i petali per creare l'atmosfera.</li><li><strong>Gioco di Ruolo:</strong> Usate le manette per esplorare dinamiche di potere e sottomissione in modo giocoso e consensuale.</li><li><strong>Piacere Condiviso:</strong> L'anello vibrante è perfetto per aumentare il piacere di entrambi durante il rapporto.</li></ul>`,
         reviews: [
-            { name: "Veronica", rating: 5, text: "Il set è proprio divertente, ogni giorno una cosa nuova da scoprire.", photo: null },
+            { name: "Veronica", rating: 5, text: "Il set è proprio divertente, ogni giorno una cosa nuova da scoprire.", photo: 'img/egg/eggcom2.webp' },
             { name: "Coppia Anonima", rating: 5, text: "L'anello vibrante è top, aumenta davvero il piacere!", photo: null },
-            { name: "Sara", rating: 4, text: "Il mini vibratore è piccolo, ma fa il suo lavoro!", photo: 'placeholder' },
-            { name: "Chiara", rating: 5, text: "L'ho preso come sorpresa per mio marito, gli è piaciuto tantissimo!", photo: null }
+            { name: "Sara", rating: 4, text: "Il mini vibratore è piccolo, ma fa il suo lavoro!", photo: null },
+            { name: "Chiara", rating: 5, text: "L'ho preso come sorpresa per mio marito, gli è piaciuto tantissimo!", photo: 'img/egg/eggcom.webp'}
         ]        
         
     },
@@ -189,19 +189,42 @@ export const products = [
     }
 ];
 
-export const quizData = {
+window.quizData = {
     questions: [
         {
             question: "Qual è il tuo obiettivo principale per questa esperienza?",
-            answers: ["Riaccedere la passione", "Sperimentare qualcosa di nuovo", "Aumentare l'intimità e la connessione", "Sorprendere il partner con audacia"]
+            answers: ["Riaccendere la passione", "Sperimentare qualcosa di nuovo", "Aumentare l'intimità e la connessione", "Sorprendere il partner con audacia"],
+            category: "preference"
         },
         {
             question: "Quanto ti senti avventuroso/a su una scala da 1 a 5?",
-            answers: ["1 - Preferisco la dolcezza", "2 - Curioso ma con cautela", "3 - Pronto a provare cose nuove", "4 - Mi piace superare i limiti", "5 - Non ho paura di niente!"]
+            answers: ["1 - Preferisco la dolcezza", "2 - Curioso ma con cautela", "3 - Pronto a provare cose nuove", "4 - Mi piace superare i limiti", "5 - Non ho paura di niente!"],
+            category: "preference"
         },
         {
             question: "Cosa ti eccita di più?",
-            answers: ["Una connessione emotiva profonda", "La scoperta di nuovi piaceri fisici", "Il gioco di ruolo e la seduzione", "L'adrenalina e le posizioni acrobatiche"]
+            answers: ["Una connessione emotiva profonda", "La scoperta di nuovi piaceri fisici", "Il gioco di ruolo e la seduzione", "L'adrenalina e le posizioni acrobatiche"],
+            category: "preference"
+        },
+        {
+            question: "In quale fascia d'età ti identifichi?",
+            answers: ["18-24 anni", "25-34 anni", "35-44 anni", "45-54 anni", "55+ anni"],
+            category: "demographics"
+        },
+        {
+            question: "Come ti identifichi?",
+            answers: ["Donna", "Uomo", "Non binario", "Preferisco non specificare"],
+            category: "demographics"
+        },
+        {
+            question: "Qual è la tua situazione sentimentale attuale?",
+            answers: ["Single", "In una relazione", "Sposato/a o convivente", "È complicato", "Preferisco non dire"],
+            category: "demographics"
+        },
+        {
+            question: "Con che frequenza esplori nuovi prodotti per l'intimità?",
+            answers: ["È la prima volta", "Raramente (1-2 volte all'anno)", "Occasionalmente (ogni qualche mese)", "Regolarmente (ogni mese)", "Spesso (settimanalmente)"],
+            category: "behavior"
         }
     ]
 };
