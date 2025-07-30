@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasPhoto = review.photo && review.photo !== 'placeholder';
         const photoUrl = hasPhoto ? review.photo : (review.photo === 'placeholder' ? 'https://placehold.co/120x120/1a1a1a/d4af37?text=Foto' : null);
 
-        const photoHTML = photoUrl ? `<img src="${photoUrl}" alt="Recensione di ${review.name}" class="review-photo">` : '';
+        const photoHTML = photoUrl ? `<img src="${photoUrl}" alt="Recensione di ${review.name}" class="review-photo" loading="lazy">` : '';
         const cardClass = photoUrl ? 'review-card-with-photo' : '';
 
         return `
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6">
                             ${product.thumbnails.map((thumb, index) => `
-                                <img src="${thumb}" alt="Miniatura ${product.name}" class="product-image rounded-lg cursor-pointer h-24 w-full object-cover border-2 border-transparent hover:border-gold-light transition-all" data-product-id="${product.id}" data-thumb-index="${index}">
+                                <img src="${thumb}" alt="Miniatura ${product.name}" class="product-image rounded-lg cursor-pointer h-24 w-full object-cover border-2 border-transparent hover:border-gold-light transition-all" data-product-id="${product.id}" data-thumb-index="${index}" loading="lazy">
                             `).join('')}
                         </div>
                         
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const reader = new FileReader();
         reader.onload = (e) => {
             previewContainer.innerHTML = `
-                <img src="${e.target.result}" class="photo-preview" alt="Anteprima foto">
+                <img src="${e.target.result}" class="photo-preview" alt="Anteprima foto" loading="lazy">
                 <button type="button" class="remove-photo-btn text-white">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!state.selectedKit) return;
         selectedKitDisplay.innerHTML = `
             <div class="flex items-center gap-4">
-                <img src="${state.selectedKit.mainImage}" alt="${state.selectedKit.name}" class="w-16 h-16 object-cover rounded-lg">
+                <img src="${state.selectedKit.mainImage}" alt="${state.selectedKit.name}" class="w-16 h-16 object-cover rounded-lg" loading="lazy">
                 <div>
                     <h3 class="text-gold-light font-semibold text-lg">${state.selectedKit.name}</h3>
                     <p class="text-gray-400">${state.selectedKit.price}</p>

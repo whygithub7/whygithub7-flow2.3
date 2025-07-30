@@ -24,7 +24,7 @@ window.products = [
             { name: "Marco e Sonia", rating: 5, text: "Wow, hanno di nuovo lanciato l'offerta con il Viagra, devo inviare subito il link allo zio prima che finiscano.", photo: null },
             { name: "Luigi", rating: 4, text: "I preservativi sono interessanti, anche se ci vuole un po' per abituarsi al ritmo diverso. Nel complesso, un ottimo acquisto.", photo: null },
             { name: "Francesca D.", rating: 5, text: "Mio marito era titubante, ma dopo aver provato questo kit la nostra vita sessuale è migliorata del 100%. Grazie!}", photo: 'img/viagra/comm1.webp' },
-            { name: "Alessandro", rating: 5, text: "Consegna discreta e veloce. Prodotti di alta qualità che mantengono le promesse. Il lubrificante è il migliore che abbia mai provato.", photo: null },
+            { name: "Roberto", rating: 5, text: "Ci hanno consegnato a Sibillini in 4 giorni. Tutti i prodotti sono fantastici. Abbiamo provato per la prima volta con il lubrificante ed è stata la cosa migliore che abbiamo mai provato nella nostra vita intima.", photo: null },
             { name: "Mario", rating: 5, text: "La mia moglie ha qualche problema, dentro è troppo secca. È stato come entrare in sabbia abrasiva. Per fortuna ho trovato questo kit con Viagra, lubrificante e preservativi. Le ho detto che avevo ordinato il Viagra per me, e che il lubrificante era un regalo. Ora siamo tutti contenti, non c'è stato bisogno di parlare dei suoi problemi", photo:"img/viagra/comm2.webp"}
         ]
     },
@@ -84,7 +84,7 @@ window.products = [
         usageTips: `<h4>Consigli per la Sorpresa Perfetta:</h4><ul class="mt-2 list-disc list-inside"><li><strong>Il Momento Giusto:</strong> Regalalo durante una cena romantica o nascondilo in camera da letto per una sorpresa inaspettata.</li><li><strong>Esplorazione Graduale:</strong> Non dovete usare tutto subito. Iniziate con il piumino e i petali per creare l'atmosfera.</li><li><strong>Gioco di Ruolo:</strong> Usate le manette per esplorare dinamiche di potere e sottomissione in modo giocoso e consensuale.</li><li><strong>Piacere Condiviso:</strong> L'anello vibrante è perfetto per aumentare il piacere di entrambi durante il rapporto.</li></ul>`,
         reviews: [
             { name: "Veronica", rating: 5, text: "Il set è proprio divertente, ogni giorno una cosa nuova da scoprire.", photo: 'img/egg/eggcom2.webp' },
-            { name: "Coppia Anonima", rating: 5, text: "L'anello vibrante è top, aumenta davvero il piacere!", photo: null },
+            { name: "Coppia Anonima", rating: 5, text: "Usiamo tutto tranne i pantaloncini. Le manette sono morbide, il piumino crea tensione e aumenta l'attesa prima dell'azione principale. Nei primi 3 utilizzi abbiamo vissuto una tempesta di emozioni contrastanti che è difficile descrivere a parole.", photo: null },
             { name: "Sara", rating: 4, text: "Il mini vibratore è piccolo, ma fa il suo lavoro!", photo: null },
             { name: "Chiara", rating: 5, text: "L'ho preso come sorpresa per mio marito, gli è piaciuto tantissimo!", photo: 'img/egg/eggcom.webp'}
         ]        
@@ -92,8 +92,8 @@ window.products = [
     },
     {
         "id": "kit4",
-        "name": "Dream Team & Date Night Chocolate Bundle",
-        "tagline": "A Night of Passion and Playfulness",
+        "name": "Bundle San Valentino 'Passione & Dolcezza'",
+        "tagline": "Una Serata di Passione e Giocosità",
         "price": "€2",
         "originalPrice": "€124.00",
         "mainImage": "img/affair/val1.webp",
@@ -124,7 +124,7 @@ window.products = [
             { "name": "Anna", "rating": 5, "text": "Il mio ex lavora alla Reckitt Benckiser a Milano. L'unica cosa utile che mi ha dato è il link a questo sito. Sto partecipando alla promozione per la terza volta. Non vedo l'ora che arrivino vibrator più potenti.", "photo": null },
             { "name": "Giulia", "rating": 5, "text": "Ottimo regalo", "photo": null },
             { "name": "Carlo", "rating": 5, "text": "Per due mesi ho cercato di convincere la mia ragazza a fare sesso, le portavo regali ogni giorno e la portavo dove voleva, ma non c'era verso. Le caramelle hanno fatto il trucco e finalmente si è aperta. Il giorno dopo mi ha detto che non si pentiva e voleva farlo di nuovo presto. Lo so, sono un bastardo, ma alla fine è andato tutto bene.", "photo": null },
-            { "name": "Sofia", "rating": 5, "text": "La candela crea un'atmosfera perfetta. Ogni volta mi ricorda il mio primo sesso.", "photo": "img/affair/affcom2.webp" }
+            { "name": "Sofia", "rating": 5, "text": "L'importante è che ora mio marito non mi sorprenda con questi giocattoli!", "photo": "img/affair/affcom2.webp" }
         ]
     },
     {
