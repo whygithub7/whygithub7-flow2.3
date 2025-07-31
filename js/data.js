@@ -133,7 +133,7 @@ window.products = [
         tagline: "Esplora Nuove Vette di Piacere",
         price: "€2",
         originalPrice: "€120.00",
-        mainImage: "img/intim/dado_kamasutra_sex_toys.webp",
+        mainImage: "img/intim/main.webp",
         thumbnails: [
             "img/intim/main0.webp",
             "img/intim/m2.webp",
